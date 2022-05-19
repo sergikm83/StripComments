@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace StripComments
 {
@@ -8,7 +10,28 @@ namespace StripComments
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            string text= "apples, pears # and bananas\ngrapes\nbananas !apples";
+
+            Console.WriteLine(StripCommentsSolution.StripComments(text,new string[] { "#", "!" }));
+        }
+    }
+
+    public class StripCommentsSolution
+    {
+        public static string StripComments(string text, string[] commentSymbols)
+        {
+            string pattern = string.Empty;
+            foreach (var symbol in commentSymbols)
+                pattern += string.Format($"{symbol}.+|");
+            var textArray = text.Split("\n");
+            string result = string.Empty;
+            for (int i=0;i<textArray.Length;i++)
+            {
+
+                result += Regex.Replace(textArray[i], pattern, string.Empty).Trim();
+                result += i != textArray.Length - 1 ? "\n" : string.Empty;
+            }
+            return result;
         }
     }
 }
