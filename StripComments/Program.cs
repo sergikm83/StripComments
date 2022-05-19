@@ -10,9 +10,17 @@ namespace StripComments
     {
         static void Main(string[] args)
         {
-            string text= "apples, pears # and bananas\ngrapes\nbananas !apples";
+            string[] text = new string[]
+            {
+                "apples, pears # and bananas\ngrapes\nbananas !apples",
+                "a #b\nc\nd $e f g",
+                "a #b\n c\nd $e f g"
+            };
 
-            Console.WriteLine(StripCommentsSolution.StripComments(text,new string[] { "#", "!" }));
+            foreach (var word in text)
+            {
+                Console.WriteLine("default text: {0}\nresult text:  {1}\n",word,StripCommentsSolution.StripComments(word, new string[] { "#", "!","$" }));
+            }
         }
     }
 
@@ -22,7 +30,7 @@ namespace StripComments
         {
             string pattern = string.Empty;
             foreach (var symbol in commentSymbols)
-                pattern += string.Format($"{symbol}.+|");
+                pattern += string.Format($"\\s\\{symbol}.+|");
             var textArray = text.Split("\n");
             string result = string.Empty;
             for (int i=0;i<textArray.Length;i++)
