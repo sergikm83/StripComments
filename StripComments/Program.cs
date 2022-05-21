@@ -19,7 +19,9 @@ namespace StripComments
 
             foreach (var word in text)
             {
-                Console.WriteLine("default text: {0}\nresult text:  {1}\n",word,StripCommentsSolution.StripComments(word, new string[] { "#", "!","$" }));
+                Console.WriteLine("default text: {0}\nresult text:  {1}\n",
+                    word,
+                    StripCommentsSolution.StripComments(word, new string[] { "#", "!" }));
             }
         }
     }
@@ -28,16 +30,22 @@ namespace StripComments
     {
         public static string StripComments(string text, string[] commentSymbols)
         {
-            string pattern = string.Empty;
-            foreach (var symbol in commentSymbols)
-                pattern += string.Format($"\\s\\{symbol}.+|");
+            string pattern = "";
+            string exceptionsSymbols = @".+|\/$#^*()";
+            for (int symbol=0;symbol<commentSymbols.Length;symbol++)
+            {
+                string validSymbol = exceptionsSymbols.IndexOf(commentSymbols[symbol]) != -1 ?
+                    string.Format($"\\{commentSymbols[symbol]}") : commentSymbols[symbol];
+                pattern += string.Format($"{validSymbol}.+|{validSymbol}");
+                pattern += symbol != commentSymbols.Length - 1 ? "|" : "";
+            }
+
             var textArray = text.Split("\n");
             string result = string.Empty;
-            for (int i=0;i<textArray.Length;i++)
+            for (int idx=0;idx<textArray.Length;idx++)
             {
-
-                result += Regex.Replace(textArray[i], pattern, string.Empty).Trim();
-                result += i != textArray.Length - 1 ? "\n" : string.Empty;
+                result += Regex.Replace(textArray[idx], pattern, string.Empty).Trim();
+                result += idx != textArray.Length - 1 ? "\n" : string.Empty;
             }
             return result;
         }
